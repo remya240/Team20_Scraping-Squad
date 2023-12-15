@@ -53,7 +53,7 @@ public class Diabetes extends testBase.BaseClass {
                 }
             }
         }
-
+        //Print total Recepie
         System.out.println("Total Scraped Recipes Count: " + totalRecipesCount);
     }
 }
