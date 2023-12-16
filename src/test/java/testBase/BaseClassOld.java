@@ -1,6 +1,7 @@
 package testBase;
 
 
+import org.testng.annotations.AfterMethod;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +13,7 @@ import org.testng.annotations.BeforeTest;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class BaseClass {
+public class BaseClassOld {
     public static WebDriver driver;
    
    
@@ -23,14 +24,15 @@ public class BaseClass {
          driver.get("https://www.tarladalal.com/");
          driver.manage().window().maximize();
          driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
- 		driver.manage().timeouts().pageLoadTimeout(3600, TimeUnit.SECONDS);
+ 		//driver.manage().timeouts().pageLoadTimeout(3600, TimeUnit.SECONDS);
       
       //  options.addArguments("--headless");
        // driver = new ChromeDriver(options);
        
     }
   
-    @AfterTest
+    @AfterMethod
+	@AfterTest
     public void tearDown() {
         if (driver != null) {
             driver.quit();

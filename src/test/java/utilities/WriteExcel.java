@@ -11,65 +11,71 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class WriteExcel {
-    public XSSFWorkbook workbook;
-    public FileOutputStream fo;
-    public FileInputStream fi;
-    public XSSFSheet sheet;
-    public XSSFRow row;
-    public XSSFCell cell;
+	public XSSFWorkbook workbook;
+	public FileOutputStream fo;
+	public FileInputStream fi;
+	public XSSFSheet sheet;
+	public XSSFRow row;
+	public XSSFCell cell;
 
-    public void setCellData(String sheetName, int rownum, int column, String data) throws IOException {
-        String path ="./src/test/resources/outPutData.xlsx";
-        File xlfile = new File(path);
-        if (!xlfile.exists()) {
-            workbook = new XSSFWorkbook();
-            fo = new FileOutputStream(path);
-            workbook.write(fo);
-        }
-        fi = new FileInputStream(path);
-        workbook = new XSSFWorkbook(fi);
+	public void setCellData(String sheetName, int rownum, int column, String data) throws IOException {
+		String path = "./src/test/resources/outPutData.xlsx";
+		File xlfile = new File(path);
+		try {
 
-        if (workbook.getSheetIndex(sheetName) == -1)
-            workbook.createSheet(sheetName);
-        sheet = workbook.getSheet(sheetName);
+			if (!xlfile.exists()) {
+				workbook = new XSSFWorkbook();
+				fo = new FileOutputStream(path);
+				workbook.write(fo);
+			}
+			fi = new FileInputStream(path);
+			workbook = new XSSFWorkbook(fi);
 
-        if (sheet.getRow(rownum) == null)
-            sheet.createRow(rownum);
-        row = sheet.getRow(rownum);
+			if (workbook.getSheetIndex(sheetName) == -1)
+				workbook.createSheet(sheetName);
+			sheet = workbook.getSheet(sheetName);
 
-        cell = row.createCell(column);
-        cell.setCellValue(data);
-        fo = new FileOutputStream(path);
-        workbook.write(fo);
-        workbook.close();
-        fi.close();
-        fo.close();
-    }
-    public void setCellAllergyData(String sheetName, int rownum, int column, String data) throws IOException {
-        String path ="./src/test/resources/AllergyData.xlsx";
-        File xlfile = new File(path);
-        if (!xlfile.exists()) {
-            workbook = new XSSFWorkbook();
-            fo = new FileOutputStream(path);
-            workbook.write(fo);
-        }
-        fi = new FileInputStream(path);
-        workbook = new XSSFWorkbook(fi);
+			if (sheet.getRow(rownum) == null)
+				sheet.createRow(rownum);
+			row = sheet.getRow(rownum);
 
-        if (workbook.getSheetIndex(sheetName) == -1)
-            workbook.createSheet(sheetName);
-        sheet = workbook.getSheet(sheetName);
+			cell = row.createCell(column);
+			cell.setCellValue(data);
+			fo = new FileOutputStream(path);
+			workbook.write(fo);
+			workbook.close();
+			fi.close();
+			fo.close();
+		} catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
+	}
 
-        if (sheet.getRow(rownum) == null)
-            sheet.createRow(rownum);
-        row = sheet.getRow(rownum);
+	public void setCellAllergyData(String sheetName, int rownum, int column, String data) throws IOException {
+		String path = "./src/test/resources/AllergyData.xlsx";
+		File xlfile = new File(path);
+		if (!xlfile.exists()) {
+			workbook = new XSSFWorkbook();
+			fo = new FileOutputStream(path);
+			workbook.write(fo);
+		}
+		fi = new FileInputStream(path);
+		workbook = new XSSFWorkbook(fi);
 
-        cell = row.createCell(column);
-        cell.setCellValue(data);
-        fo = new FileOutputStream(path);
-        workbook.write(fo);
-        workbook.close();
-        fi.close();
-        fo.close();
-    }
+		if (workbook.getSheetIndex(sheetName) == -1)
+			workbook.createSheet(sheetName);
+		sheet = workbook.getSheet(sheetName);
+
+		if (sheet.getRow(rownum) == null)
+			sheet.createRow(rownum);
+		row = sheet.getRow(rownum);
+
+		cell = row.createCell(column);
+		cell.setCellValue(data);
+		fo = new FileOutputStream(path);
+		workbook.write(fo);
+		workbook.close();
+		fi.close();
+		fo.close();
+	}
 }
