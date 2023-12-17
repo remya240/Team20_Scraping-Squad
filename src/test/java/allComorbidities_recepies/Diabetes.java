@@ -1,18 +1,27 @@
 package allComorbidities_recepies;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 import utilities.WriteExcel;
-
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.time.Duration;
 public class Diabetes extends testBase.BaseClass {
+    private static final Logger log = LogManager.getLogger(Diabetes.class);
 
     @Test
     public void fetchRecipeDetails() throws InterruptedException, Exception {
@@ -25,9 +34,13 @@ public class Diabetes extends testBase.BaseClass {
                 "Processed meat-Bacon,sausages", "hot dos", "deli meats", "chicken nuggets", "chciken patties", "bacon",
                 "Jams", "Jelly", "Pickled food - mango", "cucumber, tomatoes", "Canned fruits/vegetables -  pineapple",
                 "peaches", "mangos", "pear", "mixed fruit", "mandarine oranges", "cherries", "Chips"});
-
-        driver.findElement(By.xpath("(//a[text()='Recipe A To Z'])[1]")).click();
-        Thread.sleep(2000);
+        WebDriverWait wait = new WebDriverWait(driver, java.time.Duration.ofSeconds(10));
+        //WebElement recipeAToZLink = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//a[text()='Recipe A To Z'])[1]")));
+        String xpathExpression = "(//a[text()='Recipe A To Z'])[1]";
+        WebElement recipeAToZLink = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathExpression)));
+        recipeAToZLink.click();
+        //driver.findElement(By.xpath("(//a[text()='Recipe A To Z'])[1]")).click();
+       // Thread.sleep(2000);
         int rowCounter = 1;
         List<String> categoriesToInclude = Arrays.asList("Breakfast", "Lunch", "Snack", "Dinner");
 
@@ -38,8 +51,8 @@ public class Diabetes extends testBase.BaseClass {
         try {
             writeOutput.setCellData("Diabetes", 0, 0, "Recipe ID");
             writeOutput.setCellData("Diabetes", 0, 1, "Recipe Name");
-            writeOutput.setCellData("Diabetes", 0, 2, "Incredients");
-            writeOutput.setCellData("Diabetes", 0, 3, "Recepie URL");
+            writeOutput.setCellData("Diabetes", 0, 2, "Ingredients");
+            writeOutput.setCellData("Diabetes", 0, 3, "Recipe URL");
             for (int pageIndex = 1; pageIndex <= 3; pageIndex++) {
                 driver.navigate().to("https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith=&pageindex=" + pageIndex);
 
@@ -60,16 +73,12 @@ public class Diabetes extends testBase.BaseClass {
                         WebElement nameOfIngredients = driver.findElement(By.xpath("//div[@id= 'rcpinglist']"));
                         if (isEliminated(eliminators)) {
                             //driver.navigate().to("//div/a[text()= 'Recipe A To Z']");
-                        }  else {
+                        } else {
                             try {
-                            	System.out.println("Recipe ID: " + recipeId);
-                                System.out.println("Recipe Name: " + recipeName);
-                                System.out.println("Incredients:" + nameOfIngredients.getText());
-
-
-                                System.out.println("Recipe URL: " + recipeUrl);
-                                
-                               
+                                log.info("Recipe ID: {}", recipeId);
+                                log.info("Recipe Name: {}", recipeName);
+                                log.info("Ingredients: {}", nameOfIngredients.getText());
+                                log.info("Recipe URL: {}", recipeUrl);
 
                                 writeOutput.setCellData("Diabetes", rowCounter, 0, recipeId);
                                 writeOutput.setCellData("Diabetes", rowCounter, 1, recipeName);
