@@ -23,11 +23,7 @@ public class Hypertension extends BaseClass{
 		
 		 List<String> HypertensionEliminators = Arrays.asList(arrEliminators);
 		 
-//        List<String> eliminators = Arrays.asList(new String[]
-//		{ "salt","caffeine", "coffee","tea","alcohol","bacon","ham","frozen food","pickles","processed","ham off the bone",
-//       		"canned","fried","sauces","mayonnaise","sausages","chorizo","white rice","white bread","chips","pepperoni","mortadella",
-//       		"pretzels","crackers","coke","pepsi","fanta","gingerale","doughnuts", "fries","nuggets","pancetta","prosciutto"
-//               });
+
 
         driver.findElement(By.xpath("//div/a[text()= 'Recipe A To Z']")).click();
         Thread.sleep(2000);
