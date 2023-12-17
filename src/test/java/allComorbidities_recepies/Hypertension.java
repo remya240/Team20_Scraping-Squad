@@ -2,6 +2,7 @@ package allComorbidities_recepies;
 //import com.tarladalal.recipe.scraping.base.BaseClass;
 import testBase.*;
 import testBase.BaseClass;
+import utilities.ConfigReader;
 import utilities.WriteExcel;
 
 //import com.tarladalal.recipe.scraping.utilities.WriteExcel;
@@ -16,14 +17,35 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Hypertension extends BaseClass{
 	@Test
     public void extractRecipe() throws InterruptedException, IOException {
-        List<String> eliminators = Arrays.asList(new String[]
-		{ "salt","caffeine", "coffee","tea","alcohol","bacon","ham","frozen food","pickles","processed","ham off the bone",
-       		"canned","fried","sauces","mayonnaise","sausages","chorizo","white rice","white bread","chips","pepperoni","mortadella",
-       		"pretzels","crackers","coke","pepsi","fanta","gingerale","doughnuts", "fries","nuggets","pancetta","prosciutto"
-               });
+		ConfigReader.loadConfig();
+		String strEliminators = ConfigReader.getEliminatorList();
+		 String[] arrEliminators = strEliminators.split(","); 
+		
+		 List<String> HypertensionEliminators = Arrays.asList(arrEliminators);
+		 
+//        List<String> eliminators = Arrays.asList(new String[]
+//		{ "salt","caffeine", "coffee","tea","alcohol","bacon","ham","frozen food","pickles","processed","ham off the bone",
+//       		"canned","fried","sauces","mayonnaise","sausages","chorizo","white rice","white bread","chips","pepperoni","mortadella",
+//       		"pretzels","crackers","coke","pepsi","fanta","gingerale","doughnuts", "fries","nuggets","pancetta","prosciutto"
+//               });
 
         driver.findElement(By.xpath("//div/a[text()= 'Recipe A To Z']")).click();
         Thread.sleep(2000);
+        WriteExcel writeOutput = new WriteExcel();
+        // Create rows header
+        writeOutput.setCellData("Hypertension", 0, 0, "Recipe ID");
+        writeOutput.setCellData("Hypertension", 0, 1, "Recipe Name");
+        writeOutput.setCellData("Hypertension", 0, 2, "Recipe Category(Breakfast/lunch/snack/dinner)");
+        writeOutput.setCellData("Hypertension", 0, 3, "Food Category(Veg/non-veg/vegan/Jain)");
+        writeOutput.setCellData("Hypertension", 0, 4, "Ingredients");
+        writeOutput.setCellData("Hypertension", 0, 5, "Preparation Time");
+        writeOutput.setCellData("Hypertension", 0, 6, "Cooking Time");
+        writeOutput.setCellData("Hypertension", 0, 7, "Preparation method");
+        writeOutput.setCellData("Hypertension", 0, 8, "Nutrient values");
+        writeOutput.setCellData("Hypertension", 0, 9, "Targetted morbid conditions (Diabeties/Hypertension/Hypothyroidism)");
+        writeOutput.setCellData("Hypertension", 0, 10, "Recipe URL");
+        
+        
         int rowCounter = 1;
         // run in a loop for all recipe in a page
         List< String> pageBeginsWithList = Arrays.asList(new String[]{"0-9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"});
@@ -57,10 +79,10 @@ public class Hypertension extends BaseClass{
                         driver.navigate().to(recipeUrl);
                         driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
-                        if (isEliminated(eliminators)) {
+                        if (isEliminated(HypertensionEliminators)) {
                             //driver.navigate().to("//div/a[text()= 'Recipe A To Z']");
                         } else {
-                            WriteExcel writeOutput = new WriteExcel();
+                           
                             //Recipe id
                             try {
                                 System.out.print(recipeId);
@@ -137,10 +159,12 @@ public class Hypertension extends BaseClass{
 
                             } catch (Exception e) {
 
+                            	writeOutput.setCellData("Hypertension", rowCounter, 9, "Hypertension");
+                            	
                             }
                             try {
                                 System.out.print(recipeUrl);
-                                writeOutput.setCellData("Hypertension", rowCounter, 9, recipeUrl);
+                                writeOutput.setCellData("Hypertension", rowCounter, 10, recipeUrl);
                             } catch (Exception e) {
 
                             }
