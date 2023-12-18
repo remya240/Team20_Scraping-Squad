@@ -7,7 +7,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
-
 import testBase.BaseClass;
 import utilities.ConfigReader;
 import utilities.WriteExcel;
@@ -50,7 +49,11 @@ public class Diabetes extends BaseClass {
 		writeOutput.setCellData("Diabetes", 0, 6, "Cooking Time");
 		writeOutput.setCellData("Diabetes", 0, 7, "Preparation method");
 		writeOutput.setCellData("Diabetes", 0, 8, "Nutrient values");
-		writeOutput.setCellData("Diabetes", 0, 9, "Recipe URL");
+		writeOutput.setCellData("Diabetes", 0, 9,
+				"Targetted morbid conditions (Diabeties/Hypertension/Hypothyroidism)");
+		writeOutput.setCellData("Diabetes", 0, 10, "Recipe URL");
+
+		writeOutput.setCellData("Diabetes", 0, 11, "To Add");
 
 		List<String> pageBeginsWithList = Arrays.asList(new String[] { "0-9", "A", "B", "C", "D", "E", "F", "G", "H",
 				"I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" });
@@ -89,14 +92,13 @@ public class Diabetes extends BaseClass {
 						driver.navigate().to(recipeUrl);
 						driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
-						// if (isEliminated(HypertensionEliminators))
 						List<List<String>> elliminatedAndGetToAdd = isEliminatedAndGetToAdd(DiabetesEliminators,
 								DiabetesToAddlist);
 						String strIsEliminatedList = elliminatedAndGetToAdd.get(0).toString();
-						String strToAddString="";
-						
+						String strToAddString = "";
+
 						if (!elliminatedAndGetToAdd.get(1).isEmpty()) {
-						 strToAddString = elliminatedAndGetToAdd.get(1).toString();
+							strToAddString = elliminatedAndGetToAdd.get(1).toString();
 						}
 						if (strIsEliminatedList == "true") {
 							// driver.navigate().to("//div/a[text()= 'Recipe A To Z']");
@@ -177,6 +179,13 @@ public class Diabetes extends BaseClass {
 								log.info("Recepieurl: ", recipeUrl);
 								writeOutput.setCellData("Diabetes", rowCounter, 10, recipeUrl);
 							} catch (Exception e) {
+							}
+							try {
+								log.info("RecepieToAdd: ");
+
+								writeOutput.setCellData("Hypertension", rowCounter, 11, strToAddString);
+							} catch (Exception e) {
+
 							}
 
 							rowCounter++;
@@ -270,15 +279,13 @@ public class Diabetes extends BaseClass {
 							}
 						}
 					}
-				
 
 				}
 			} catch (Exception e) {
 				System.out.print("No Such Element " + e.getLocalizedMessage());
 			}
 		});
-		
-		
+
 		elliminatedAndGetToAdd.add(isEliminatedList);
 		elliminatedAndGetToAdd.add(toAddMatchedList);
 

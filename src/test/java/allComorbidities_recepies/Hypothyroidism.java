@@ -28,7 +28,7 @@ public class Hypothyroidism extends testBase.BaseClass {
 		String strEliminators = ConfigReader.HypothyroidismList();
 		String[] arrEliminators = strEliminators.split(",");
 		List<String> HyperthyroidismEliminators = Arrays.asList(arrEliminators);
-		
+
 		String strToAddlist = ConfigReader.getToAddListHypothyroidsm();
 		String[] arrToAddlist = strToAddlist.split(",");
 		List<String> HypothyroidsmToAddlist = Arrays.asList(arrToAddlist);
@@ -45,7 +45,13 @@ public class Hypothyroidism extends testBase.BaseClass {
 		writeOutput.setCellData("Hypothyroidism", 0, 6, "Cooking Time");
 		writeOutput.setCellData("Hypothyroidism", 0, 7, "Preparation method");
 		writeOutput.setCellData("Hypothyroidism", 0, 8, "Nutrient values");
+		writeOutput.setCellData("Hypothyroidism", 0, 9,
+				"Targetted morbid conditions (Diabeties/Hypertension/Hypothyroidism)");
+		writeOutput.setCellData("Hypothyroidism", 0, 10, "Recipe URL");
+
 		writeOutput.setCellData("Hypothyroidism", 0, 9, "Recipe URL");
+		writeOutput.setCellData("Hypothyroidism", 0, 11, "To Add");
+
 		List<String> pageBeginsWithList = Arrays.asList(new String[] { "0-9", "A", "B", "C", "D", "E", "F", "G", "H",
 				"I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" });
 		for (int k = 0; k < pageBeginsWithList.size(); k++) {
@@ -82,13 +88,13 @@ public class Hypothyroidism extends testBase.BaseClass {
 						List<List<String>> elliminatedAndGetToAdd = isEliminatedAndGetToAdd(HyperthyroidismEliminators,
 								HypothyroidsmToAddlist);
 						String strIsEliminatedList = elliminatedAndGetToAdd.get(0).toString();
-						String strToAddString="";
-						
+						String strToAddString = "";
+
 						if (!elliminatedAndGetToAdd.get(1).isEmpty()) {
-						 strToAddString = elliminatedAndGetToAdd.get(1).toString();
+							strToAddString = elliminatedAndGetToAdd.get(1).toString();
 						}
 						if (strIsEliminatedList == "true") {
-						}else {
+						} else {
 							try {
 								log.info("Recipe ID: ", recipeId);
 								writeOutput.setCellData("Hypothyroidism", rowCounter, 0, recipeId);
@@ -143,15 +149,26 @@ public class Hypothyroidism extends testBase.BaseClass {
 							}
 							try {
 								WebElement nutrients = driver.findElement(By.xpath("//table[@id= 'rcpnutrients']"));
+
 								log.info("nutrients: ", nutrients.getText());
 								writeOutput.setCellData("Hypothyroidism", rowCounter, 8, nutrients.getText());
 							} catch (Exception e) {
+								writeOutput.setCellData("Hypothyroidism", rowCounter, 9, "Diabetes");
+
 							}
 							try {
-								log.info("nutrients: ", recipeUrl);
-								writeOutput.setCellData("Hypothyroidism", rowCounter, 9, recipeUrl);
+								log.info("Recepieurl: ", recipeUrl);
+								writeOutput.setCellData("Hypothyroidism", rowCounter, 10, recipeUrl);
 							} catch (Exception e) {
 							}
+							try {
+								log.info("RecepieToAdd: ");
+
+								writeOutput.setCellData("Hypothyroidism", rowCounter, 11, strToAddString);
+							} catch (Exception e) {
+
+							}
+
 							rowCounter++;
 						}
 					}
@@ -239,15 +256,13 @@ public class Hypothyroidism extends testBase.BaseClass {
 							}
 						}
 					}
-				
 
 				}
 			} catch (Exception e) {
 				System.out.print("No Such Element " + e.getLocalizedMessage());
 			}
 		});
-		
-		
+
 		elliminatedAndGetToAdd.add(isEliminatedList);
 		elliminatedAndGetToAdd.add(toAddMatchedList);
 

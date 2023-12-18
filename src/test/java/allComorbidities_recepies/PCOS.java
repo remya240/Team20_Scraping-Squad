@@ -1,17 +1,13 @@
 package allComorbidities_recepies;
 
-import testBase.*;
 import testBase.BaseClass;
 import utilities.ConfigReader;
 import utilities.WriteExcel;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-//import com.tarladalal.recipe.scraping.utilities.WriteExcel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +42,8 @@ public class PCOS extends BaseClass {
 		writeOutput.setCellData("PCOS", 0, 8, "Nutrient values");
 		writeOutput.setCellData("PCOS", 0, 9, "Targetted morbid conditions (Diabeties/Hypertension/Hypothyroidism)");
 		writeOutput.setCellData("PCOS", 0, 10, "Recipe URL");
+
+		writeOutput.setCellData("PCOS", 0, 11, "To Add");
 
 		List<String> pageBeginsWithList = Arrays.asList(new String[] { "0-9", "A", "B", "C", "D", "E", "F", "G", "H",
 				"I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" });
@@ -84,10 +82,10 @@ public class PCOS extends BaseClass {
 						List<List<String>> elliminatedAndGetToAdd = isEliminatedAndGetToAdd(PCOSEliminators,
 								getToAddListPCOSlist);
 						String strIsEliminatedList = elliminatedAndGetToAdd.get(0).toString();
-						String strToAddString="";
-						
+						String strToAddString = "";
+
 						if (!elliminatedAndGetToAdd.get(1).isEmpty()) {
-						 strToAddString = elliminatedAndGetToAdd.get(1).toString();
+							strToAddString = elliminatedAndGetToAdd.get(1).toString();
 						}
 						if (strIsEliminatedList == "true") {
 							// driver.navigate().to("//div/a[text()= 'Recipe A To Z']");
@@ -169,17 +167,22 @@ public class PCOS extends BaseClass {
 							}
 							try {
 								WebElement nutrients = driver.findElement(By.xpath("//table[@id= 'rcpnutrients']"));
+
 								log.info("nutrients: ", nutrients.getText());
 								writeOutput.setCellData("PCOS", rowCounter, 8, nutrients.getText());
-
 							} catch (Exception e) {
-
 								writeOutput.setCellData("PCOS", rowCounter, 9, "PCOS");
 
 							}
 							try {
 								log.info("Recepieurl: ", recipeUrl);
 								writeOutput.setCellData("PCOS", rowCounter, 10, recipeUrl);
+							} catch (Exception e) {
+							}
+							try {
+								log.info("RecepieToAdd: ");
+
+								writeOutput.setCellData("PCOS", rowCounter, 11, strToAddString);
 							} catch (Exception e) {
 
 							}
@@ -195,7 +198,6 @@ public class PCOS extends BaseClass {
 		}
 
 	}
-
 
 	private boolean isEliminated(List<String> eliminators) {
 		AtomicBoolean isEliminatorPresent = new AtomicBoolean(false);
@@ -276,15 +278,13 @@ public class PCOS extends BaseClass {
 							}
 						}
 					}
-				
 
 				}
 			} catch (Exception e) {
 				System.out.print("No Such Element " + e.getLocalizedMessage());
 			}
 		});
-		
-		
+
 		elliminatedAndGetToAdd.add(isEliminatedList);
 		elliminatedAndGetToAdd.add(toAddMatchedList);
 
