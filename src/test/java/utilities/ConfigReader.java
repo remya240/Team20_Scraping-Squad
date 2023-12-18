@@ -27,13 +27,89 @@ public class ConfigReader {
 		}
 	}
 
-	// Get 
-	public static String getEliminatorList() {
+	// Get
+	public static String DiabetesgetEliminatorList() {
+		String eliminators = prop.getProperty("DiabetesEliminators");
+		if (eliminators != null) {
+			return eliminators;
+		} else {
+			throw new RuntimeException("eliminators not specified in config.properties file");
+		}
+	}
+
+	public static String HypertensiongetEliminatorList() {
 		String eliminators = prop.getProperty("HypertensionEliminators");
 		if (eliminators != null) {
 			return eliminators;
 		} else {
 			throw new RuntimeException("eliminators not specified in config.properties file");
+		}
+	}
+
+	public static String PCOSEliminatorsList() {
+		String eliminators = prop.getProperty("PCOSEliminators");
+		if (eliminators != null) {
+			return eliminators;
+		} else {
+			throw new RuntimeException("eliminators not specified in config.properties file");
+		}
+	}
+
+	public static String HypothyroidismList() {
+		String eliminators = prop.getProperty("HyperthyroidismEliminators");
+		if (eliminators != null) {
+			return eliminators;
+		} else {
+			throw new RuntimeException("eliminators not specified in config.properties file");
+		}
+	}
+
+	public static String AllergyList() {
+		String eliminators = prop.getProperty("AllergyEliminators");
+		if (eliminators != null) {
+			return eliminators;
+		} else {
+			throw new RuntimeException("eliminators not specified in config.properties file");
+		}
+	}
+
+	// Get Heypertension toAdd list
+	public static String getToAddListHypertension() {
+		String toAdd = prop.getProperty("HypertensionToAdd");
+
+		if (toAdd != null) {
+			return toAdd;
+		} else {
+			throw new RuntimeException("HypertensionToAdd not specified in config.properties file");
+		}
+	}
+
+	public static String getToAddListDiabetes() {
+		String toAdd = prop.getProperty("DiabetesToAdd");
+
+		if (toAdd != null) {
+			return toAdd;
+		} else {
+			throw new RuntimeException("DiabetesToAdd not specified in config.properties file");
+		}
+	}
+
+	public static String getToAddListHypothyroidsm() {
+		String toAdd = prop.getProperty("HypothyroidismToAdd");
+
+		if (toAdd != null) {
+			return toAdd;
+		} else {
+			throw new RuntimeException("HypothyroidismToAdd not specified in config.properties file");
+		}
+	}
+	public static String getToAddListPCOS() {
+		String toAdd = prop.getProperty("PCOSToAdd");
+
+		if (toAdd != null) {
+			return toAdd;
+		} else {
+			throw new RuntimeException("PCOSToAdd not specified in config.properties file");
 		}
 	}
 
