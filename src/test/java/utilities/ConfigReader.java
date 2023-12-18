@@ -27,14 +27,37 @@ public class ConfigReader {
 		}
 	}
 
-	// Get 
-	public static String getEliminatorList() {
+	// Get Heypertension elimiated list 
+	public static String getEliminatorListHypertension() {
 		String eliminators = prop.getProperty("HypertensionEliminators");
+	
 		if (eliminators != null) {
 			return eliminators;
 		} else {
-			throw new RuntimeException("eliminators not specified in config.properties file");
+			throw new RuntimeException("HypertensionEliminators not specified in config.properties file");
 		}
 	}
+	// Get Heypertension toAdd list 
+		public static String getToAddListHypertension() {
+			String toAdd = prop.getProperty("HypertensionToAdd");
+		
+			if (toAdd != null) {
+				return toAdd;
+			} else {
+				throw new RuntimeException("HypertensionToAdd not specified in config.properties file");
+			}
+		}
+	
+	// Get 
+		public static String getEliminatorListForDiabetes() {
+		
+			String eliminators = prop.getProperty("DiabetesEliminators");
+			
+			if (eliminators != null) {
+				return eliminators;
+			} else {
+				throw new RuntimeException("DiabetesEliminators not specified in config.properties file");
+			}
+		}
 
 }
