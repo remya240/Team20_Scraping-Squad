@@ -1,60 +1,54 @@
 package allComorbidities_recepies;
 
+import testBase.BaseClass;
+import utilities.ConfigReader;
+import utilities.WriteExcel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
-import testBase.BaseClass;
-import utilities.ConfigReader;
-import utilities.WriteExcel;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Diabetes extends BaseClass {
-	private static final Logger log = LogManager.getLogger(Diabetes.class);
-	private WebDriverWait wait;
+public class Hypertension extends BaseClass {
+	private static final Logger log = LogManager.getLogger(Hypertension.class);
 
 	@Test
-	public void fetchRecipeDetails() throws InterruptedException, Exception {
+	public void extractRecipe() throws InterruptedException, IOException {
 		ConfigReader.loadConfig();
-		String strEliminators = ConfigReader.DiabetesgetEliminatorList();
+		String strEliminators = ConfigReader.HypertensiongetEliminatorList();
 		String[] arrEliminators = strEliminators.split(",");
+		List<String> HypertensionEliminators = Arrays.asList(arrEliminators);
 
-		List<String> DiabetesEliminators = Arrays.asList(arrEliminators);
-		String strToAddlist = ConfigReader.getToAddListDiabetes();
+		String strToAddlist = ConfigReader.getToAddListHypertension();
 		String[] arrToAddlist = strToAddlist.split(",");
-		List<String> DiabetesToAddlist = Arrays.asList(arrToAddlist);
+		List<String> HypertensionToAddlist = Arrays.asList(arrToAddlist);
 
 		driver.findElement(By.xpath("//div/a[text()= 'Recipe A To Z']")).click();
-		wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		int rowCounter = 1;
+		Thread.sleep(2000);
 		WriteExcel writeOutput = new WriteExcel();
 		// Create rows header
-
-		writeOutput.setCellData("Diabetes", 0, 0, "Recipe ID");
-		writeOutput.setCellData("Diabetes", 0, 1, "Recipe Name");
-		writeOutput.setCellData("Diabetes", 0, 2, "Recipe Category(Breakfast/lunch/snack/dinner)");
-		writeOutput.setCellData("Diabetes", 0, 3, "8 Category(Veg/non-veg/vegan/Jain");
-		writeOutput.setCellData("Diabetes", 0, 4, "Ingredients");
-		writeOutput.setCellData("Diabetes", 0, 5, "Preparation Time");
-		writeOutput.setCellData("Diabetes", 0, 6, "Cooking Time");
-		writeOutput.setCellData("Diabetes", 0, 7, "Preparation method");
-		writeOutput.setCellData("Diabetes", 0, 8, "Nutrient values");
-		writeOutput.setCellData("Diabetes", 0, 9,
+		writeOutput.setCellData("Hypertension", 0, 0, "Recipe ID");
+		writeOutput.setCellData("Hypertension", 0, 1, "Recipe Name");
+		writeOutput.setCellData("Hypertension", 0, 2, "Recipe Category(Breakfast/lunch/snack/dinner)");
+		writeOutput.setCellData("Hypertension", 0, 3, "Food Category(Veg/non-veg/vegan/Jain)");
+		writeOutput.setCellData("Hypertension", 0, 4, "Ingredients");
+		writeOutput.setCellData("Hypertension", 0, 5, "Preparation Time");
+		writeOutput.setCellData("Hypertension", 0, 6, "Cooking Time");
+		writeOutput.setCellData("Hypertension", 0, 7, "Preparation method");
+		writeOutput.setCellData("Hypertension", 0, 8, "Nutrient values");
+		writeOutput.setCellData("Hypertension", 0, 9,
 				"Targetted morbid conditions (Diabeties/Hypertension/Hypothyroidism)");
-		writeOutput.setCellData("Diabetes", 0, 10, "Recipe URL");
+		writeOutput.setCellData("Hypertension", 0, 10, "Recipe URL");
+		writeOutput.setCellData("Hypertension", 0, 11, "To Add");
 
-		writeOutput.setCellData("Diabetes", 0, 11, "To Add");
-
+		int rowCounter = 1;
+		// run in a loop for all recipe in a page
 		List<String> pageBeginsWithList = Arrays.asList(new String[] { "0-9", "A", "B", "C", "D", "E", "F", "G", "H",
 				"I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" });
 		for (int k = 0; k < pageBeginsWithList.size(); k++) {
@@ -63,37 +57,40 @@ public class Diabetes extends BaseClass {
 			try {
 				lastPage = Integer
 						.parseInt(driver.findElement(By.xpath("//div/a[@class= 'respglink'][last()]")).getText());
-
+				lastPage = 2; // This needs to remove for all the pages
 			} catch (Exception e) {
-
+				// do nothing or log exception
 			}
 			if (0 != lastPage) {
 				for (int j = 1; j <= lastPage; j++) {
 					int pageindex = j;
 					driver.navigate().to("https://www.tarladalal.com/RecipeAtoZ.aspx?beginswith="
 							+ pageBeginsWithList.get(k) + "&pageindex=" + j);
+					List<WebElement> recipeCardElements = driver
+							.findElements(By.xpath("//div[@class='rcc_recipecard']"));
+					List<String> recipeUrls = new ArrayList<>();
+					Map<String, String> recipeIdUrls = new HashMap<>();
 
-					List<WebElement> recipeCardElements = wait.until(ExpectedConditions
-							.visibilityOfAllElementsLocatedBy(By.xpath("//div[@class='rcc_recipecard']")));
-					List<String> RecepieURL = new ArrayList<>();
-					Map<String, String> RecepieIDUrls = new HashMap<>();
+					// Looping through all recipes Web elements and generating a navigation URL
 					recipeCardElements.stream().forEach(recipeCardElement -> {
-						RecepieURL.add("https://www.tarladalal.com/" + recipeCardElement
+						recipeUrls.add("https://www.tarladalal.com/" + recipeCardElement
 								.findElement(By.xpath("//span[@class='rcc_recipename']/a")).getDomAttribute("href"));
-
-						RecepieIDUrls.put(recipeCardElement.getDomAttribute("id").replace("rcp", ""),
+						// example: recipeIdUrls.put("id","url");=> Extracted Recipe Id and Recipe URL
+						// Here and added to a hashmap
+						recipeIdUrls.put(recipeCardElement.getDomAttribute("id").replace("rcp", ""),
 								"https://www.tarladalal.com/"
 										+ recipeCardElement.findElement(By.tagName("a")).getDomAttribute("href"));
 					});
 
-					for (Map.Entry<String, String> RecepieIDUrlEntry : RecepieIDUrls.entrySet()) {
-						String recipeUrl = RecepieIDUrlEntry.getValue();
-						String recepieID = RecepieIDUrlEntry.getKey();
+					for (Map.Entry<String, String> recipeIdUrlEntry : recipeIdUrls.entrySet()) {
+						String recipeUrl = recipeIdUrlEntry.getValue();
+						String recipeId = recipeIdUrlEntry.getKey();
 						driver.navigate().to(recipeUrl);
 						driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
-						List<List<String>> elliminatedAndGetToAdd = isEliminatedAndGetToAdd(DiabetesEliminators,
-								DiabetesToAddlist);
+						// if (isEliminated(HypertensionEliminators))
+						List<List<String>> elliminatedAndGetToAdd = isEliminatedAndGetToAdd(HypertensionEliminators,
+								HypertensionToAddlist);
 						String strIsEliminatedList = elliminatedAndGetToAdd.get(0).toString();
 						String strToAddString = "";
 
@@ -106,96 +103,110 @@ public class Diabetes extends BaseClass {
 
 							// Recipe id
 							try {
-								log.info("Recipe ID: {}", recepieID);
-								writeOutput.setCellData("Diabetes", rowCounter, 0, recepieID);
+								log.info("Recipe ID: {}", recipeId);
+								writeOutput.setCellData("Hypertension", rowCounter, 0, recipeId);
 							} catch (Exception e) {
 
 							}
+
+							// Recipe Name
 							try {
-								WebElement recipeName = driver
+								WebElement recipeTitle = driver
 										.findElement(By.xpath("//span[@id= 'ctl00_cntrightpanel_lblRecipeName']"));
-								log.info("Recipe Name", recipeName.getText());
-								writeOutput.setCellData("Diabetes", rowCounter, 1, recipeName.getText());
+								log.info("Recipe Name", recipeTitle.getText());
+								writeOutput.setCellData("Hypertension", rowCounter, 1, recipeTitle.getText());
+
 							} catch (Exception e) {
 
 							}
 							try {
 								WebElement recipeCategory = driver.findElement(By.xpath(
 										"//span[@itemprop= 'description']/*[contains (text(), 'breakfast') or contains (text(), 'lunch') or contains (text(), 'dinner')]"));
-
 								log.info("RecipeCategory: ", recipeCategory.getText());
-								writeOutput.setCellData("Diabetes", rowCounter, 2, recipeCategory.getText());
+								writeOutput.setCellData("Hypertension", rowCounter, 2, recipeCategory.getText());
+
 							} catch (Exception e) {
 
 							}
 							try {
-								WebElement FoodCategory = driver
+								WebElement foodCategory = driver
 										.findElement(By.xpath("//a/span[text()= 'No Cooking Veg Indian']"));
+								log.info("FoodCategory: ", foodCategory.getText());
+								writeOutput.setCellData("Hypertension", rowCounter, 3, foodCategory.getText());
 
-								log.info("FoodCategory: ", FoodCategory.getText());
-								writeOutput.setCellData("Diabetes", rowCounter, 3, FoodCategory.getText());
 							} catch (Exception e) {
+
 							}
+
 							try {
 								WebElement nameOfIngredients = driver.findElement(By.xpath("//div[@id= 'rcpinglist']"));
-
 								log.info("nameOfIngredients: ", nameOfIngredients.getText());
-								writeOutput.setCellData("Diabetes", rowCounter, 4, nameOfIngredients.getText());
+								writeOutput.setCellData("Hypertension", rowCounter, 4, nameOfIngredients.getText());
+
 							} catch (Exception e) {
+
 							}
+
 							try {
 								WebElement preparationTime = driver
 										.findElement(By.xpath("//p/time[@itemprop= 'prepTime']"));
-
 								log.info("preparationTime: ", preparationTime.getText());
-								writeOutput.setCellData("Diabetes", rowCounter, 5, preparationTime.getText());
+								writeOutput.setCellData("Hypertension", rowCounter, 5, preparationTime.getText());
+
 							} catch (Exception e) {
+
 							}
+
 							try {
 								WebElement cookTime = driver.findElement(By.xpath("//p/time[@itemprop= 'cookTime']"));
-
 								log.info("cookTime: ", cookTime.getText());
-								writeOutput.setCellData("Diabetes", rowCounter, 6, cookTime.getText());
+								writeOutput.setCellData("Hypertension", rowCounter, 6, cookTime.getText());
+
 							} catch (Exception e) {
+
 							}
+
 							try {
 								WebElement prepMethod = driver
 										.findElement(By.xpath("//div[@id= 'ctl00_cntrightpanel_pnlRcpMethod']"));
-
 								log.info("prepMethod: ", prepMethod.getText());
-								writeOutput.setCellData("Diabetes", rowCounter, 7, prepMethod.getText());
+								writeOutput.setCellData("Hypertension", rowCounter, 7, prepMethod.getText());
+
 							} catch (Exception e) {
+
 							}
 							try {
 								WebElement nutrients = driver.findElement(By.xpath("//table[@id= 'rcpnutrients']"));
-
 								log.info("nutrients: ", nutrients.getText());
-								writeOutput.setCellData("Diabetes", rowCounter, 8, nutrients.getText());
+								writeOutput.setCellData("Hypertension", rowCounter, 8, nutrients.getText());
+
 							} catch (Exception e) {
-								writeOutput.setCellData("Diabetes", rowCounter, 9, "Diabetes");
+
+								writeOutput.setCellData("Hypertension", rowCounter, 9, "Hypertension");
 
 							}
 							try {
 								log.info("Recepieurl: ", recipeUrl);
-								writeOutput.setCellData("Diabetes", rowCounter, 10, recipeUrl);
+								writeOutput.setCellData("Hypertension", rowCounter, 10, recipeUrl);
 							} catch (Exception e) {
+
 							}
+
 							try {
 								log.info("RecepieToAdd: ");
-
 								writeOutput.setCellData("Hypertension", rowCounter, 11, strToAddString);
 							} catch (Exception e) {
 
 							}
 
 							rowCounter++;
+
 						}
 
 					}
-
 				}
-
 			}
+
 		}
 
 	}
